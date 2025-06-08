@@ -809,7 +809,7 @@ var unmarshalTests = []struct {
 
 	// sequence as key
 	{
-		"?\n - Detroit Tigers\n  - Chicago cubs\n: 2001-07-23",
+		"?\n  - Detroit Tigers\n  - Chicago cubs\n: 2001-07-23",
 		map[interface{}]time.Time{uniqueslice.Make([]interface{}{"Detroit Tigers", "Chicago cubs"}): time.Date(2001, 7, 23, 0, 0, 0, 0, time.UTC)},
 	},
 
