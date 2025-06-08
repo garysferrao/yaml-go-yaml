@@ -26,6 +26,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Snawoot/uniquemap"
+	"github.com/Snawoot/uniqueslice"
 	. "gopkg.in/check.v1"
 
 	"go.yaml.in/yaml/v3"
@@ -804,6 +806,18 @@ var unmarshalTests = []struct {
 			"c": []interface{}{"d", "e"},
 		},
 	},
+
+	// sequence as key
+	{
+		"?\n - Detroit Tigers\n  - Chicago cubs\n: 2001-07-23",
+		map[interface{}]time.Time{uniqueslice.Make([]interface{}{"Detroit Tigers", "Chicago cubs"}): time.Date(2001, 7, 23, 0, 0, 0, 0, time.UTC)},
+	},
+
+	// map as key
+	{
+		"?\n null: false\n:\n  42: 3.1416",
+		map[interface{}]map[interface{}]float64{uniquemap.Make(map[interface{}]interface{}{nil: false}): {42: 3.1416}},
+	},
 }
 
 type M map[string]interface{}
@@ -1383,7 +1397,7 @@ longTag:
   label: center/big
 
 inlineMap:
-  # Inlined map 
+  # Inlined map
   << : {"x": 1, "y": 2, "r": 10}
   label: center/big
 

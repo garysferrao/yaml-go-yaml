@@ -24,6 +24,9 @@ import (
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/Snawoot/uniquemap"
+	"github.com/Snawoot/uniqueslice"
 )
 
 // ----------------------------------------------------------------------------
@@ -841,8 +844,25 @@ func (d *decoder) mapping(n *Node, out reflect.Value) (good bool) {
 			if kkind == reflect.Interface {
 				kkind = k.Elem().Kind()
 			}
-			if kkind == reflect.Map || kkind == reflect.Slice {
-				failf("invalid map key: %#v", k.Interface())
+			if kkind == reflect.Map {
+				// TODO
+				mii, ok := k.Interface().(map[interface{}]interface{})
+				if !ok {
+					failf("cannot make a Go map key of type map: %#v, %T", mii, mii)
+				}
+				um := uniquemap.Make(mii)
+				k = reflect.ValueOf(um)
+				kkind = k.Kind()
+			}
+			if kkind == reflect.Slice {
+				// TODO
+				is, ok := k.Interface().([]interface{})
+				if !ok {
+					failf("cannot make a Go map key of type slice: %#v, %T", is, is)
+				}
+				us := uniqueslice.Make(is)
+				k = reflect.ValueOf(us)
+				kkind = k.Kind()
 			}
 			e := reflect.New(et).Elem()
 			if d.unmarshal(n.Content[i+1], e) || n.Content[i+1].ShortTag() == nullTag && (mapIsNew || !out.MapIndex(k).IsValid()) {
